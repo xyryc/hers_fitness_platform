@@ -204,6 +204,14 @@ class _TrainerSignUpScreenState extends State<TrainerSignUpScreen> {
         Obx(
           () => TextFormField(
             controller: controller,
+            onChanged: (val) {
+              if (val.length > 50) {
+                controller.text = val.substring(0, 50);
+                controller.selection = TextSelection.fromPosition(
+                  TextPosition(offset: controller.text.length),
+                );
+              }
+            },
             onFieldSubmitted: (value) {
               if (value.trim().isNotEmpty) {
                 onAdd(value);
@@ -278,12 +286,17 @@ class _TrainerSignUpScreenState extends State<TrainerSignUpScreen> {
                           color: Color(0xFF6B7280),
                         ),
                         SizedBox(width: 4.w),
-                        AppText(
-                          "${tags.length}/10",
-                          style: AppTextStyles.sm14Regular.copyWith(
-                            color: const Color(0xFF6B7280),
-                            fontSize: 12,
-                          ),
+                        ValueListenableBuilder<TextEditingValue>(
+                          valueListenable: controller,
+                          builder: (context, value, child) {
+                            return AppText(
+                              "${value.text.length}/50",
+                              style: AppTextStyles.sm14Regular.copyWith(
+                                color: const Color(0xFF6B7280),
+                                fontSize: 12,
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -719,7 +732,7 @@ class _TrainerSignUpScreenState extends State<TrainerSignUpScreen> {
                       backgroundColor: canSubmit
                           ? AppColors.actionSecondary
                           : AppColors.actionPrimaryDisabled,
-                      onTap: registerController.isLoading.value || !canSubmit
+                      onTap: registerController.isLoading.value
                           ? () {}
                           : registerController.continueToIdentityVerification,
                     );

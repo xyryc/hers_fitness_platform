@@ -86,6 +86,13 @@ class TrainerRegisterController extends GetxController {
   }
 
   void continueToIdentityVerification() {
+    if (classesTaughtController.text.trim().isNotEmpty) {
+      addClassTag(classesTaughtController.text.trim());
+    }
+    if (certificationsController.text.trim().isNotEmpty) {
+      addCertificationTag(certificationsController.text.trim());
+    }
+
     final validationMessage = _validate();
     if (validationMessage != null) {
       showAppSnackbar(

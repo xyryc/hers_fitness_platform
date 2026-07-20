@@ -481,7 +481,7 @@ class _MemberSignUpScreenState extends State<MemberSignUpScreen> {
                       backgroundColor: canSubmit
                           ? AppColors.actionSecondary
                           : AppColors.actionPrimaryDisabled,
-                      onTap: registerController.isLoading.value || !canSubmit
+                      onTap: registerController.isLoading.value
                           ? () {}
                           : registerController.continueToIdentityVerification,
                     );

@@ -1144,7 +1144,7 @@ class _GovernmentIdCard extends StatelessWidget {
           ),
           SizedBox(height: 24.h),
           AppText(
-            "Take a driver's license,\nnational identity card or passport photo",
+            "This app is exclusively for women.\nID verification is required to help keep our members and trainers safe",
             textAlign: TextAlign.center,
             style: AppTextStyles.xs12Regular.copyWith(
               color: AppColors.textSecondary,
