@@ -1,0 +1,7 @@
+-- No-op.
+--
+-- This migration previously tried to rename the chat conversation unique index
+-- before the chat system migration creates that index. That breaks fresh shadow
+-- database replays with P3006/P3018. The current Prisma schema keeps the
+-- explicit index name "uq_chat_conversations_member_trainer", so no rename is
+-- required here.

@@ -1,0 +1,5 @@
+-- Add REFUNDED to PaymentStatus enum
+ALTER TYPE "PaymentStatus" ADD VALUE IF NOT EXISTS 'REFUNDED';
+
+-- Add BOOKING_CANCELLED to NotificationType enum
+ALTER TYPE "NotificationType" ADD VALUE IF NOT EXISTS 'BOOKING_CANCELLED';

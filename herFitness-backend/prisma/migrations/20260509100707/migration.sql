@@ -1,0 +1,4 @@
+-- This migration originally attempted to remove a default from
+-- "member_fitness_assessments" before the table existed in the migration
+-- history. The table is created later in 20260509164000_add_member_fitness_assessment,
+-- so this migration must be a no-op to keep shadow database creation valid.

@@ -1,0 +1,91 @@
+### Get Current by id
+GET {{baseUrl}}/users/kumarsonu676@gmail.com
+Content-Type: application/json
+x-client-id: {{clientId}}
+Authorization: Bearer {{accessToken}}
+
+### Get Current User
+GET {{baseUrl}}/users/me
+Content-Type: application/json
+x-client-id: {{clientId}}
+Authorization: Bearer {{accessToken}}
+
+### Admin: Get Members
+GET {{baseUrl}}/users/admin/members
+Content-Type: application/json
+x-client-id: {{clientId}}
+Authorization: Bearer {{accessToken}}
+
+### Admin: Get Pending Verifications
+GET {{baseUrl}}/users/admin/verifications
+Content-Type: application/json
+x-client-id: {{clientId}}
+Authorization: Bearer {{accessToken}}
+
+### Admin: Get Pending Member Verifications
+GET {{baseUrl}}/users/admin/verifications?type=MEMBER
+Content-Type: application/json
+x-client-id: {{clientId}}
+Authorization: Bearer {{accessToken}}
+
+### Admin: Get Pending Trainer Verifications
+GET {{baseUrl}}/users/admin/verifications?type=TRAINER
+Content-Type: application/json
+x-client-id: {{clientId}}
+Authorization: Bearer {{accessToken}}
+
+### Admin: Get Member Details
+GET {{baseUrl}}/users/admin/members/{{memberUserId}}
+Content-Type: application/json
+x-client-id: {{clientId}}
+Authorization: Bearer {{accessToken}}
+
+### Admin: Get Trainers
+GET {{baseUrl}}/users/admin/trainers
+Content-Type: application/json
+x-client-id: {{clientId}}
+Authorization: Bearer {{accessToken}}
+
+### Admin: Get Trainer Details
+GET {{baseUrl}}/users/admin/trainers/{{trainerUserId}}
+Content-Type: application/json
+x-client-id: {{clientId}}
+Authorization: Bearer {{accessToken}}
+
+
+### Create User
+POST {{baseUrl}}/users
+Content-Type: application/json
+x-client-id: {{clientId}}
+Authorization: Bearer {{accessToken}}
+
+{
+    "email": "kumarsonu676@gmail.com",
+    "name": "Kumar Sonu",
+    "password": "123456"
+}
+
+### Create User (with avatar)
+POST {{baseUrl}}/users
+x-client-id: {{clientId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="email"
+
+kumarsonu676@gmail.com
+--boundary
+Content-Disposition: form-data; name="name"
+
+Kumar Sonu
+--boundary
+Content-Disposition: form-data; name="password"
+
+123456
+--boundary
+Content-Disposition: form-data; name="profilePicture"; filename="QGNT6688QG_sonu.jpg"
+Content-Type: image/jpeg
+
+< D:\QGNT6688QG_sonu.jpg
+--boundary--

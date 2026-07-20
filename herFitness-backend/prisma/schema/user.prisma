@@ -1,0 +1,718 @@
+enum AuthProvider {
+    CREDENTIALS
+    GOOGLE
+    FACEBOOK
+    GITHUB
+    APPLE
+}
+
+enum VerificationStatus {
+    PENDING
+    APPROVED
+    REJECTED
+}
+
+enum ClassDeliveryMode {
+    ONLINE
+    OFFLINE
+    BOTH
+}
+
+enum FitnessGoal {
+    LOSE_WEIGHT
+    GAIN_BULK
+    GAIN_ENDURANCE
+    TRYING_OUT_APP
+}
+
+enum WeightUnit {
+    KG
+    LBS
+}
+
+enum DietPreference {
+    PLANT_BASED_VEGAN
+    CARBO_DIET
+    SPECIALIZED_PALEO_KETO
+    TRADITIONAL_FRUIT_DIET
+}
+
+enum SupplementType {
+    WHEY
+    PROTEIN
+    VITAMIN_D
+    MAGNESIUM
+}
+
+enum CalorieUnit {
+    KCAL
+    JOULES
+}
+
+enum SleepQuality {
+    EXCELLENT
+    GREAT
+    NORMAL
+    BAD
+    INSOMNIAC
+}
+
+enum FitnessClassStatus {
+    ACTIVE
+    CANCELLED
+    COMPLETED
+}
+
+enum FitnessSessionPlanType {
+    SINGLE_SESSION
+    MONTHLY_SESSION
+}
+
+enum AvailabilitySlotStatus {
+    AVAILABLE
+    BOOKED
+    BLOCKED
+    CANCELLED
+}
+
+enum BookingStatus {
+    HELD
+    CONFIRMED
+    CANCELLED
+    EXPIRED
+    PAYMENT_FAILED
+    RESCHEDULE_REQUESTED
+    RESCHEDULED
+    COMPLETED
+}
+
+enum PaymentStatus {
+    PENDING
+    PAID
+    REFUNDED
+    FAILED
+    EXPIRED
+}
+
+enum BookingPaymentStatus {
+    PENDING
+    PAID
+    FAILED
+    EXPIRED
+}
+
+enum ChatMessageType {
+    TEXT
+    IMAGE
+}
+
+enum ChatParticipantStatus {
+    ACTIVE
+    INACTIVE
+}
+
+enum NotificationType {
+    BOOKING_CONFIRMED
+    BOOKING_PAYMENT_FAILED
+    BOOKING_RESCHEDULE_REQUESTED
+    BOOKING_RESCHEDULED
+    BOOKING_COMPLETED
+    BOOKING_CANCELLED
+    CLASS_CANCELLED
+    CHAT_MESSAGE
+    TRAINER_REVIEW_RECEIVED
+    FAVORITE_TRAINER_ADDED
+    ACCOUNT_VERIFICATION_APPROVED
+    ACCOUNT_VERIFICATION_REJECTED
+    HELP_TICKET_SUBMITTED
+    HELP_TICKET_RESOLVED
+    TEST_PUSH
+}
+
+enum HelpTicketStatus {
+    OPEN
+    IN_REVIEW
+    RESOLVED
+    CLOSED
+}
+
+enum DevicePlatform {
+    IOS
+    ANDROID
+    WEB
+}
+
+model User {
+    id              String       @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid // UUID or cuid for unique user ID
+    email           String?      @unique @map("email") 
+    username        String?      @unique @map("username") 
+    password        String?      @map("password") @db.VarChar(1000) // Sufficient for bcrypt hashes
+    firstName       String?      @map("first_name") @db.VarChar(200)
+    lastName        String?      @map("last_name") @db.VarChar(200)
+    displayName     String?      @map("display_name") @db.VarChar(300)
+    phoneNumber     String?      @map("phone_number") @db.VarChar(20)
+    profileImageUrl String?      @map("profile_image_url") @db.VarChar(2048)
+    coverPhotoUrl   String?      @map("cover_photo_url") @db.VarChar(2048)
+    state           String?      @map("state") @db.VarChar(200)
+    location        String?      @map("location") @db.VarChar(500)
+    provider        AuthProvider @default(CREDENTIALS) @map("provider")
+    providerId      String?      @map("provider_id") @db.VarChar(100)
+    isEmailVerified Boolean      @default(false) @map("is_email_verified")
+    isPhoneVerified Boolean      @default(false) @map("is_phone_verified")
+    isActive        Boolean      @default(true) @map("is_active")
+
+    dob     DateTime? @map("dob") @db.Date // Date of birth
+    gender  String?   @map("gender") @db.VarChar(50) // Gender of the user
+    tagline String?   @map("tagline") @db.VarChar(300) // Short user tagline or status message
+    website String?   @map("website") @db.VarChar(2048) // Personal or professional website URL
+
+    // Localization
+    countryCodeIso3 String?  @map("country_code_iso3") @db.VarChar(5) // ISO 3166-1 alpha-3 country code
+    country         Country? @relation(fields: [countryCodeIso3], references: [codeIso3], onDelete: SetNull)
+
+    timezone String? @map("timezone") @db.VarChar(50) // IANA timezone format, e.g., "America/New_York"
+    locale   String? @map("locale") @db.VarChar(10) // e.g., "en-US"
+
+    // Extensibility
+    metadata Json? @map("metadata") // For storing additional user preferences/data
+
+    currentLat         Float?    @map("current_lat")
+    currentLng         Float?    @map("current_lng")
+    locationUpdatedAt  DateTime? @map("location_updated_at") @db.Timestamptz(3)
+
+    // Timestamps
+    createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+    // Relations
+    roles                 UserRole[]
+    userSessions          UserSession[]
+    userTokens            UserToken[]
+    userPasswordHistories UserPasswordHistory[]
+    verification          UserVerification? @relation("UserVerificationOwner")
+    trainerProfile        TrainerProfile?
+    memberFitnessAssessment MemberFitnessAssessment?
+    createdClasses        FitnessClass[]    @relation("TrainerClasses")
+    trainerAvailabilitySlots FitnessClassAvailabilitySlot[] @relation("TrainerAvailabilitySlots")
+    memberBookings        Booking[]         @relation("MemberBookings")
+    trainerBookings       Booking[]         @relation("TrainerBookings")
+    bookingPayments       BookingPayment[]
+    favoriteTrainers      FavoriteTrainer[] @relation("MemberFavoriteTrainers")
+    favoritedByMembers    FavoriteTrainer[] @relation("TrainerFavoritedByMembers")
+    memberTrainerReviews  TrainerReview[]   @relation("MemberTrainerReviews")
+    trainerReviews        TrainerReview[]   @relation("TrainerReviews")
+    memberChatConversations ChatConversation[] @relation("MemberChatConversations")
+    trainerChatConversations ChatConversation[] @relation("TrainerChatConversations")
+    sentChatMessages      ChatMessage[]      @relation("SentChatMessages")
+    reviewedVerifications UserVerification[] @relation("VerificationReviewedBy")
+    notifications         UserNotification[]
+    deviceTokens          UserDeviceToken[]
+    helpTickets                HelpTicket[]
+    notificationPreference     UserNotificationPreference?
+    adminCommissionUpdates     AdminCommissionConfig[]     @relation("AdminCommissionUpdates")
+
+    @@unique([provider, providerId], name: "uq_users_provider_provider_id")
+    @@map("users")
+}
+
+model UserVerification {
+    id                  String             @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid
+    userId              String             @unique @map("user_id") @db.Uuid
+    idCardType          String             @map("id_card_type") @db.VarChar(100)
+    idCardNumber        String             @unique @map("id_card_number") @db.VarChar(100)
+    idCardFrontImageUrl String             @map("id_card_front_image_url") @db.VarChar(2048)
+    idCardBackImageUrl  String             @map("id_card_back_image_url") @db.VarChar(2048)
+    verificationStatus  VerificationStatus @default(PENDING) @map("verification_status")
+    reviewedByUserId    String?            @map("reviewed_by_user_id") @db.Uuid
+    reviewedAt          DateTime?          @map("reviewed_at") @db.Timestamptz(3)
+    rejectionReason     String?            @map("rejection_reason") @db.Text
+    createdAt           DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt           DateTime?          @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+    user           User  @relation("UserVerificationOwner", fields: [userId], references: [id], onDelete: Cascade)
+    reviewedByUser User? @relation("VerificationReviewedBy", fields: [reviewedByUserId], references: [id], onDelete: SetNull)
+
+    @@index([verificationStatus], name: "idx_user_verifications_status")
+    @@map("user_verifications")
+}
+
+model TrainerProfile {
+    id                   String             @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid
+    userId               String             @unique @map("user_id") @db.Uuid
+    bio                  String             @map("bio") @db.Text
+    classesTaught        String             @map("classes_taught") @db.Text
+    instructorExperience String             @map("instructor_experience") @db.VarChar(200)
+    certifications       String             @map("certifications") @db.Text
+    classDeliveryMode    ClassDeliveryMode  @map("class_delivery_mode")
+    baseLocationLat      Float              @default(0) @map("base_location_lat")
+    baseLocationLng      Float              @default(0) @map("base_location_lng")
+    liveLocationLat      Float?             @map("live_location_lat")
+    liveLocationLng      Float?             @map("live_location_lng")
+    isOnline             Boolean            @default(false) @map("is_online")
+    lastSeen             DateTime?          @map("last_seen") @db.Timestamptz(3)
+    stripeConnectAccountId String?          @unique @map("stripe_connect_account_id") @db.VarChar(255)
+    stripeConnectOnboardingComplete Boolean @default(false) @map("stripe_connect_onboarding_complete")
+    stripeChargesEnabled Boolean            @default(false) @map("stripe_charges_enabled")
+    stripePayoutsEnabled Boolean            @default(false) @map("stripe_payouts_enabled")
+    stripeDetailsSubmitted Boolean          @default(false) @map("stripe_details_submitted")
+    stripeConnectUpdatedAt DateTime?        @map("stripe_connect_updated_at") @db.Timestamptz(3)
+    createdAt            DateTime           @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt            DateTime?          @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("trainer_profiles")
+}
+
+model MemberFitnessAssessment {
+    id                        String          @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid
+    userId                    String          @unique @map("user_id") @db.Uuid
+    fitnessGoal               FitnessGoal     @map("fitness_goal")
+    weight                    Float           @map("weight")
+    weightUnit                WeightUnit      @map("weight_unit")
+    age                       Int             @map("age")
+    hasPreviousFitnessExperience Boolean      @map("has_previous_fitness_experience")
+    physicalLimitations       String?         @map("physical_limitations") @db.Text
+    dietPreference            DietPreference  @map("diet_preference")
+    takingSupplements         Boolean         @map("taking_supplements")
+    supplements               SupplementType[] @map("supplements")
+    calorieGoal               Int             @map("calorie_goal")
+    calorieUnit               CalorieUnit     @map("calorie_unit")
+    sleepQuality              SleepQuality    @map("sleep_quality")
+    createdAt                 DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt                 DateTime?       @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("member_fitness_assessments")
+}
+
+model FitnessClass {
+    id             String    @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid
+    trainerUserId  String    @map("trainer_user_id") @db.Uuid
+    name           String    @map("name") @db.VarChar(200)
+    scheduledAt    DateTime? @map("scheduled_at") @db.Timestamptz(3)
+    classType      String    @map("class_type") @db.VarChar(120)
+    sessionPlanType FitnessSessionPlanType @default(SINGLE_SESSION) @map("session_plan_type")
+    durationMinutes Int      @map("duration_minutes")
+    pricePerMember Decimal   @map("price_per_member") @db.Decimal(10, 2)
+    sessionFormat  String    @map("session_format") @db.VarChar(120)
+    maxMembers     Int?      @map("max_members")
+    status         FitnessClassStatus @default(ACTIVE) @map("status")
+    rescheduleStatus String? @map("reschedule_status") @db.VarChar(50)
+    rescheduleRequestedByUserId String? @map("reschedule_requested_by_user_id") @db.Uuid
+    rescheduleRequestedAt DateTime? @map("reschedule_requested_at") @db.Timestamptz(3)
+    rescheduleNote String? @map("reschedule_note") @db.Text
+    createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt      DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+    trainer User @relation("TrainerClasses", fields: [trainerUserId], references: [id], onDelete: Cascade)
+    availabilitySlots FitnessClassAvailabilitySlot[]
+    bookings Booking[]
+    bookingPayments BookingPayment[]
+
+    @@index([trainerUserId], name: "idx_fitness_classes_trainer_user_id")
+    @@index([scheduledAt], name: "idx_fitness_classes_scheduled_at")
+    @@map("fitness_classes")
+}
+
+model FitnessClassAvailabilitySlot {
+    id             String                 @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid
+    fitnessClassId String                 @map("fitness_class_id") @db.Uuid
+    trainerUserId  String                 @map("trainer_user_id") @db.Uuid
+    date           String                 @map("date") @db.VarChar(10)
+    startTime      String                 @map("start_time") @db.VarChar(5)
+    endTime        String                 @map("end_time") @db.VarChar(5)
+    startAt        DateTime               @map("start_at") @db.Timestamptz(3)
+    endAt          DateTime               @map("end_at") @db.Timestamptz(3)
+    status         AvailabilitySlotStatus @default(AVAILABLE) @map("status")
+    isRescheduleProposal Boolean          @default(false) @map("is_reschedule_proposal")
+    rescheduleStatus String?              @map("reschedule_status") @db.VarChar(50)
+    createdAt      DateTime               @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt      DateTime?              @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+    fitnessClass FitnessClass @relation(fields: [fitnessClassId], references: [id], onDelete: Cascade)
+    trainer      User         @relation("TrainerAvailabilitySlots", fields: [trainerUserId], references: [id], onDelete: Cascade)
+    bookings     Booking[]
+
+    @@index([fitnessClassId], name: "idx_fitness_class_availability_slots_class_id")
+    @@index([trainerUserId], name: "idx_fitness_class_availability_slots_trainer_id")
+    @@index([status], name: "idx_fitness_class_availability_slots_status")
+    @@index([startAt], name: "idx_fitness_class_availability_slots_start_at")
+    @@map("fitness_class_availability_slots") 
+}
+
+model Booking {
+    id                 String        @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid
+    memberUserId       String        @map("member_user_id") @db.Uuid
+    trainerUserId      String        @map("trainer_user_id") @db.Uuid
+    fitnessClassId     String        @map("fitness_class_id") @db.Uuid
+    availabilitySlotId String        @map("availability_slot_id") @db.Uuid
+    bookingPaymentId   String?       @map("booking_payment_id") @db.Uuid
+    fullName           String        @map("full_name") @db.VarChar(200)
+    email              String        @map("email") 
+    phoneNumber        String        @map("phone_number") @db.VarChar(20)
+    location           String        @map("location") @db.VarChar(500)
+    comment            String?       @map("comment") @db.Text
+    scheduledDate      String        @map("scheduled_date") @db.VarChar(10)
+    startTime          String        @map("start_time") @db.VarChar(5)
+    endTime            String        @map("end_time") @db.VarChar(5)
+    totalAmount        Decimal       @map("total_amount") @db.Decimal(10, 2)
+    bookingStatus      BookingStatus @default(HELD) @map("booking_status")
+    paymentStatus      PaymentStatus @default(PENDING) @map("payment_status")
+    reservedUntil      DateTime?     @map("reserved_until") @db.Timestamptz(3)
+    confirmedAt        DateTime?     @map("confirmed_at") @db.Timestamptz(3)
+    cancelledAt        DateTime?     @map("cancelled_at") @db.Timestamptz(3)
+    expiredAt          DateTime?     @map("expired_at") @db.Timestamptz(3)
+    reminderEnabled    Boolean       @default(false) @map("reminder_enabled")
+    reminderAt         DateTime?     @map("reminder_at") @db.Timestamptz(3)
+    rescheduleRequestedByUserId String? @map("reschedule_requested_by_user_id") @db.Uuid
+    rescheduleRequestedAt DateTime?  @map("reschedule_requested_at") @db.Timestamptz(3)
+    proposedScheduledDate String?    @map("proposed_scheduled_date") @db.VarChar(10)
+    proposedStartTime     String?    @map("proposed_start_time") @db.VarChar(5)
+    proposedEndTime       String?    @map("proposed_end_time") @db.VarChar(5)
+    memberRescheduleAcceptedAt DateTime? @map("member_reschedule_accepted_at") @db.Timestamptz(3)
+    trainerRescheduleAcceptedAt DateTime? @map("trainer_reschedule_accepted_at") @db.Timestamptz(3)
+    rescheduledAt      DateTime?     @map("rescheduled_at") @db.Timestamptz(3)
+    memberCheckedInAt  DateTime?     @map("member_checked_in_at") @db.Timestamptz(3)
+    trainerCheckedInAt DateTime?     @map("trainer_checked_in_at") @db.Timestamptz(3)
+    memberCompletedAt  DateTime?     @map("member_completed_at") @db.Timestamptz(3)
+    trainerCompletedAt DateTime?     @map("trainer_completed_at") @db.Timestamptz(3)
+    completedAt        DateTime?     @map("completed_at") @db.Timestamptz(3)
+    createdAt          DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt          DateTime?     @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+    member           User                         @relation("MemberBookings", fields: [memberUserId], references: [id], onDelete: Cascade)
+    trainer          User                         @relation("TrainerBookings", fields: [trainerUserId], references: [id], onDelete: Cascade)
+    fitnessClass     FitnessClass                 @relation(fields: [fitnessClassId], references: [id], onDelete: Cascade)
+    availabilitySlot FitnessClassAvailabilitySlot @relation(fields: [availabilitySlotId], references: [id], onDelete: Restrict)
+    bookingPayment   BookingPayment?              @relation(fields: [bookingPaymentId], references: [id], onDelete: SetNull)
+
+    @@index([memberUserId], name: "idx_bookings_member_user_id")
+    @@index([trainerUserId], name: "idx_bookings_trainer_user_id")
+    @@index([fitnessClassId], name: "idx_bookings_fitness_class_id")
+    @@index([availabilitySlotId], name: "idx_bookings_availability_slot_id")
+    @@index([bookingPaymentId], name: "idx_bookings_booking_payment_id")
+    @@index([bookingStatus, reservedUntil], name: "idx_bookings_status_reserved_until")
+    @@map("bookings")
+}
+
+model BookingPayment {
+    id                  String               @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid
+    memberUserId        String               @map("member_user_id") @db.Uuid
+    fitnessClassId      String               @map("fitness_class_id") @db.Uuid
+    subtotalAmount      Decimal              @map("subtotal_amount") @db.Decimal(10, 2)
+    discountAmount      Decimal              @default(0) @map("discount_amount") @db.Decimal(10, 2)
+    taxAmount           Decimal              @default(0) @map("tax_amount") @db.Decimal(10, 2)
+    totalAmount         Decimal              @map("total_amount") @db.Decimal(10, 2)
+    // Platform commission — snapshotted from AdminCommissionConfig at booking creation time
+    commissionRate      Decimal              @default(0) @map("commission_rate") @db.Decimal(5, 2)
+    platformFeeAmount   Decimal              @default(0) @map("platform_fee_amount") @db.Decimal(10, 2)
+    trainerPayoutAmount Decimal              @default(0) @map("trainer_payout_amount") @db.Decimal(10, 2)
+    currency            String               @default("USD") @map("currency") @db.VarChar(3)
+    couponCode          String?              @map("coupon_code") @db.VarChar(100)
+    paymentMethod       String?              @map("payment_method") @db.VarChar(100)
+    provider            String?              @map("provider") @db.VarChar(100)
+    providerSessionId   String?              @map("provider_session_id") @db.VarChar(255)
+    status              BookingPaymentStatus @default(PENDING) @map("status")
+    expiresAt           DateTime             @map("expires_at") @db.Timestamptz(3)
+    paidAt              DateTime?            @map("paid_at") @db.Timestamptz(3)
+    failedAt            DateTime?            @map("failed_at") @db.Timestamptz(3)
+    createdAt           DateTime             @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt           DateTime?            @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+    member       User         @relation(fields: [memberUserId], references: [id], onDelete: Cascade)
+    fitnessClass FitnessClass @relation(fields: [fitnessClassId], references: [id], onDelete: Cascade)
+    bookings     Booking[]
+
+    @@index([memberUserId], name: "idx_booking_payments_member_user_id")
+    @@index([fitnessClassId], name: "idx_booking_payments_fitness_class_id")
+    @@index([status, expiresAt], name: "idx_booking_payments_status_expires_at")
+    @@map("booking_payments")
+}
+
+// Singleton table — always exactly one row. Admin sets platform commission %.
+model AdminCommissionConfig {
+    id              String    @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid
+    // Commission as a percentage: 0.00–100.00 (e.g., 15.00 = 15 %)
+    commissionRate  Decimal   @default(0) @map("commission_rate") @db.Decimal(5, 2)
+    updatedByUserId String?   @map("updated_by_user_id") @db.Uuid
+    createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt       DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+    updatedByUser User? @relation("AdminCommissionUpdates", fields: [updatedByUserId], references: [id], onDelete: SetNull)
+
+    @@map("admin_commission_config")
+}
+
+model FavoriteTrainer {
+    id            String   @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid
+    memberUserId  String   @map("member_user_id") @db.Uuid
+    trainerUserId String   @map("trainer_user_id") @db.Uuid
+    createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+    member  User @relation("MemberFavoriteTrainers", fields: [memberUserId], references: [id], onDelete: Cascade)
+    trainer User @relation("TrainerFavoritedByMembers", fields: [trainerUserId], references: [id], onDelete: Cascade)
+
+    @@unique([memberUserId, trainerUserId], name: "uq_favorite_trainers_member_trainer")
+    @@index([memberUserId], name: "idx_favorite_trainers_member_user_id")
+    @@index([trainerUserId], name: "idx_favorite_trainers_trainer_user_id")
+    @@map("favorite_trainers")
+}
+
+model TrainerReview {
+    id            String   @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid
+    memberUserId  String   @map("member_user_id") @db.Uuid
+    trainerUserId String   @map("trainer_user_id") @db.Uuid
+    rating        Int      @map("rating")
+    comment       String   @map("comment") @db.Text
+    createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt     DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+    member  User @relation("MemberTrainerReviews", fields: [memberUserId], references: [id], onDelete: Cascade)
+    trainer User @relation("TrainerReviews", fields: [trainerUserId], references: [id], onDelete: Cascade)
+
+    @@unique([memberUserId, trainerUserId], name: "uq_trainer_reviews_member_trainer")
+    @@index([memberUserId], name: "idx_trainer_reviews_member_user_id")
+    @@index([trainerUserId], name: "idx_trainer_reviews_trainer_user_id")
+    @@index([rating], name: "idx_trainer_reviews_rating")
+    @@map("trainer_reviews")
+}
+
+model ChatConversation {
+    id             String                @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid
+    memberUserId   String                @map("member_user_id") @db.Uuid
+    trainerUserId  String                @map("trainer_user_id") @db.Uuid
+    memberStatus   ChatParticipantStatus @default(INACTIVE) @map("member_status")
+    trainerStatus  ChatParticipantStatus @default(INACTIVE) @map("trainer_status")
+    lastMessageAt  DateTime?             @map("last_message_at") @db.Timestamptz(3)
+    createdAt      DateTime              @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt      DateTime?             @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+    member   User          @relation("MemberChatConversations", fields: [memberUserId], references: [id], onDelete: Cascade)
+    trainer  User          @relation("TrainerChatConversations", fields: [trainerUserId], references: [id], onDelete: Cascade)
+    messages ChatMessage[]
+
+    @@unique([memberUserId, trainerUserId], name: "uq_chat_conversations_member_trainer")
+    @@index([memberUserId], name: "idx_chat_conversations_member_user_id")
+    @@index([trainerUserId], name: "idx_chat_conversations_trainer_user_id")
+    @@index([lastMessageAt], name: "idx_chat_conversations_last_message_at")
+    @@map("chat_conversations")
+}
+
+model ChatMessage {
+    id             String          @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid
+    conversationId String          @map("conversation_id") @db.Uuid
+    senderUserId   String          @map("sender_user_id") @db.Uuid
+    messageType    ChatMessageType @default(TEXT) @map("message_type")
+    text           String?         @map("text") @db.Text
+    attachmentUrl  String?         @map("attachment_url") @db.VarChar(2048)
+    attachmentType String?         @map("attachment_type") @db.VarChar(100)
+    seenAt         DateTime?       @map("seen_at") @db.Timestamptz(3)
+    createdAt      DateTime        @default(now()) @map("created_at") @db.Timestamptz(3)
+
+    conversation ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+    sender       User             @relation("SentChatMessages", fields: [senderUserId], references: [id], onDelete: Cascade)
+
+    @@index([conversationId, createdAt], name: "idx_chat_messages_conversation_created_at")
+    @@index([senderUserId], name: "idx_chat_messages_sender_user_id")
+    @@map("chat_messages")
+}
+
+model Role {
+    id          String  @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid // UUID or cuid for unique role ID
+    name        String  @unique @map("name") @db.VarChar(100)
+    description String? @map("description") @db.VarChar(500)
+    isActive    Boolean @default(true) @map("is_active")
+
+    // Relations
+    users UserRole[]
+
+    @@map("roles")
+}
+
+model UserRole {
+    userId String @map("user_id") @db.Uuid // UUID or cuid for unique user ID
+    roleId String @map("role_id") @db.Uuid // UUID or cuid for unique role ID
+
+    // Relations with cascade delete
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+    role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+    @@id([userId, roleId])
+    @@index([roleId], name: "idx_user_roles_role_id")
+    @@map("user_roles")
+}
+
+model UserSession {
+    id     String @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid
+    userId String @map("user_id") @db.Uuid
+    token  String @unique @map("token") @db.Text // Secure token for session management
+
+    ipAddress String? @map("ip_address") @db.VarChar(45) // IPv4 or IPv6 address
+    userAgent String? @map("user_agent") @db.Text // User agent string
+
+    expiresAt DateTime @map("expires_at") @db.Timestamptz(3) // Expiration timestamp for the session
+
+    isActive Boolean @default(false) @map("is_active") // Indicates if the session is active
+
+    createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(3) // Creation timestamp for the session
+    lastUsedAt DateTime? @map("last_used_at") @db.Timestamptz(3) // Last used timestamp for the session
+
+    // Relations with cascade delete
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([expiresAt], name: "idx_user_sessions_expires_at")
+    @@map("user_sessions")
+}
+
+// Table to store tokens like password reset, email validation tokens
+model UserToken {
+    id     String    @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid
+    userId String    @map("user_id") @db.Uuid
+    token  String    @map("token") @db.VarChar(500)
+    type   String    @map("type") @db.VarChar(50) // Type of token (e.g., "PASSWORD_RESET", "EMAIL_VERIFICATION", "PHONE_VERIFICATION", "API_KEY", "TWO_FACTOR_BACKUP")
+    isUsed Boolean   @default(false) @map("is_used")
+    usedAt DateTime? @map("used_at") @db.Timestamptz(3)
+
+    // Additional context
+    ipAddress String? @map("ip_address") @db.VarChar(45)
+    userAgent String? @map("user_agent") @db.VarChar(1000)
+
+    // Timestamps
+    createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+    expiresAt DateTime @map("expires_at") @db.Timestamptz(3)
+
+    // Relations with cascade delete
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    // Indexes    
+    // Efficient cleanup: WHERE expires_at < now()
+    @@index([expiresAt], name: "idx_user_tokens_expires_at")
+    @@index([userId, token], name: "idx_user_tokens_user_token")
+    @@map("user_tokens")
+}
+
+model UserNotification {
+    id        String           @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid
+    userId    String           @map("user_id") @db.Uuid
+    type      NotificationType @map("type")
+    title     String           @map("title") @db.VarChar(200)
+    body      String           @map("body") @db.Text
+    data      Json?            @map("data")
+    readAt    DateTime?        @map("read_at") @db.Timestamptz(3)
+    createdAt DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId, createdAt(sort: Desc)], name: "idx_user_notifications_user_created_desc")
+    @@index([userId, readAt], name: "idx_user_notifications_user_read_at")
+    @@map("user_notifications")
+}
+
+model UserDeviceToken {
+    id         String         @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid
+    userId     String         @map("user_id") @db.Uuid
+    token      String         @unique @map("token") @db.Text
+    platform   DevicePlatform @map("platform")
+    deviceId   String?        @map("device_id") @db.VarChar(255)
+    isActive   Boolean        @default(true) @map("is_active")
+    lastSeenAt DateTime       @default(now()) @map("last_seen_at") @db.Timestamptz(3)
+    createdAt  DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt  DateTime?      @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId, isActive], name: "idx_user_device_tokens_user_active")
+    @@map("user_device_tokens")
+}
+
+model StaticContent {
+    id        String    @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid
+    key       String    @unique @map("key") @db.VarChar(100)
+    title     String    @map("title") @db.VarChar(200)
+    content   String    @map("content") @db.Text
+    createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+    @@map("static_content")
+}
+
+model HelpTicket {
+    id           String           @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid
+    senderUserId String           @map("sender_user_id") @db.Uuid
+    title        String           @map("title") @db.VarChar(300)
+    body         String           @map("body") @db.Text
+    status       HelpTicketStatus @default(OPEN) @map("status")
+    adminNote    String?          @map("admin_note") @db.Text
+    resolvedAt   DateTime?        @map("resolved_at") @db.Timestamptz(3)
+    createdAt    DateTime         @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt    DateTime?        @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+    sender User @relation(fields: [senderUserId], references: [id], onDelete: Cascade)
+
+    @@index([senderUserId], name: "idx_help_tickets_sender_user_id")
+    @@index([status], name: "idx_help_tickets_status")
+    @@map("help_tickets")
+}
+
+// Password history table for security compliance
+model UserNotificationPreference {
+    id                  String    @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid
+    userId              String    @unique @map("user_id") @db.Uuid
+
+    // ─── Trainer-only preferences ────────────────────────────────────────────────
+    newBooking          Boolean   @default(true) @map("new_booking")
+    classCheckIn        Boolean   @default(true) @map("class_check_in")
+    paymentReceived     Boolean   @default(true) @map("payment_received")
+
+    // ─── Member-only preferences ─────────────────────────────────────────────────
+    bookingConfirmation Boolean   @default(true) @map("booking_confirmation")
+    bookingCancellation Boolean   @default(true) @map("booking_cancellation")
+    paymentConfirmation Boolean   @default(true) @map("payment_confirmation")
+    trainerMessage      Boolean   @default(true) @map("trainer_message")
+
+    // ─── Shared preferences (both roles) ─────────────────────────────────────────
+    classReminder       Boolean   @default(true) @map("class_reminder")
+    systemAnnouncements Boolean   @default(false) @map("system_announcements")
+    emailNotifications  Boolean   @default(true) @map("email_notifications")
+    pushNotifications   Boolean   @default(true) @map("push_notifications")
+
+    createdAt           DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt           DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("user_notification_preferences")
+}
+
+model Faq {
+    id        String    @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid
+    question  String    @map("question") @db.VarChar(500)
+    answer    String    @map("answer") @db.Text
+    order     Int       @default(0) @map("order")
+    isActive  Boolean   @default(true) @map("is_active")
+    createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+    updatedAt DateTime? @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+    @@index([isActive, order], name: "idx_faqs_active_order")
+    @@map("faqs")
+}
+
+// Password history table for security compliance
+model UserPasswordHistory {
+    id           String   @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid
+    userId       String   @map("user_id") @db.Uuid // UUID or cuid for unique user ID
+    passwordHash String   @map("password_hash") @db.VarChar(1000) // Sufficient for bcrypt hashes
+    createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+    // Relations
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    // Indexes
+    // Fast "has this hash been used by this user?" AND prevents duplicates
+    @@unique([userId, passwordHash], name: "uq_pwdhist_user_hash")
+    // Fast "latest N" per user: WHERE user_id=$1 ORDER BY created_at DESC LIMIT N
+    @@index([userId, createdAt(sort: Desc)], name: "idx_pwdhist_user_created_desc")
+    @@map("user_password_history")
+}

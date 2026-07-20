@@ -1,0 +1,313 @@
+{
+  "info": {
+    "_postman_id": "a1a4a9c0-0a5f-4f0a-9c7c-6c7d6e3a9f11",
+    "name": "Nearby Trainer API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Postman collection for trainer/member location flows and nearby trainer discovery."
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5001"
+    },
+    {
+      "key": "trainer_token",
+      "value": ""
+    },
+    {
+      "key": "member_token",
+      "value": ""
+    },
+    {
+      "key": "trainer_id",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Trainer Location",
+      "item": [
+        {
+          "name": "Set Trainer Base Location",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{trainer_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lat\": 23.8103,\n  \"lng\": 90.4125\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/location/trainer/base",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "location",
+                "trainer",
+                "base"
+              ]
+            },
+            "description": "Trainer sets the permanent/base location used when not actively sharing live location."
+          }
+        },
+        {
+          "name": "Update Trainer Live Location",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{trainer_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lat\": 23.8115,\n  \"lng\": 90.4138\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/location/trainer/live",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "location",
+                "trainer",
+                "live"
+              ]
+            },
+            "description": "Trainer updates live location. Nearby lookup prefers this when trainer is online."
+          }
+        },
+        {
+          "name": "Update Trainer Online Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{trainer_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"isOnline\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/location/trainer/status",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "location",
+                "trainer",
+                "status"
+              ]
+            },
+            "description": "Trainer marks themselves online/offline. Updates lastSeen automatically."
+          }
+        },
+        {
+          "name": "Clear Trainer Live Location",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{trainer_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/location/trainer/live",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "location",
+                "trainer",
+                "live"
+              ]
+            },
+            "description": "Clears live location and forces trainer offline."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Member Location",
+      "item": [
+        {
+          "name": "Set Member Current Location",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{member_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lat\": 23.8098,\n  \"lng\": 90.4102\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/location/member",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "location",
+                "member"
+              ]
+            },
+            "description": "Member stores their current location for trainer discovery flows."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Trainer Discovery",
+      "item": [
+        {
+          "name": "Get Nearby Trainers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{member_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/trainers/nearby?lat=23.8098&lng=90.4102&radius_km=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "trainers",
+                "nearby"
+              ],
+              "query": [
+                {
+                  "key": "lat",
+                  "value": "23.8098"
+                },
+                {
+                  "key": "lng",
+                  "value": "90.4102"
+                },
+                {
+                  "key": "radius_km",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Nearby trainer lookup. Uses live location when online; otherwise base location."
+          }
+        },
+        {
+          "name": "Search Trainers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{member_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/trainers/search?specialty=Yoga&price_min=10&price_max=100&name=Sara",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "trainers",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "specialty",
+                  "value": "Yoga"
+                },
+                {
+                  "key": "price_min",
+                  "value": "10"
+                },
+                {
+                  "key": "price_max",
+                  "value": "100"
+                },
+                {
+                  "key": "name",
+                  "value": "Sara"
+                }
+              ]
+            },
+            "description": "Searches trainers by specialty, optional price range, and partial name."
+          }
+        },
+        {
+          "name": "Get Trainer Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{member_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/trainers/{{trainer_id}}?lat=23.8098&lng=90.4102",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "trainers",
+                "{{trainer_id}}"
+              ],
+              "query": [
+                {
+                  "key": "lat",
+                  "value": "23.8098"
+                },
+                {
+                  "key": "lng",
+                  "value": "90.4102"
+                }
+              ]
+            },
+            "description": "Gets a trainer profile with active classes. Includes distance when lat/lng are supplied."
+          }
+        }
+      ]
+    }
+  ]
+}

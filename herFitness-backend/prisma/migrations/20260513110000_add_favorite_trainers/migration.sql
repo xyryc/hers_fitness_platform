@@ -1,0 +1,2 @@
+-- Favorite trainers table is created in migration 20260513070809.
+-- This migration is intentionally kept as a no-op because the folder already existed locally.

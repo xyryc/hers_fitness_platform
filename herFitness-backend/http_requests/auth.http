@@ -1,0 +1,150 @@
+
+### Login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+x-client-id: {{clientId}}
+
+{
+    "username": "kumarsonu676@gmail.com",
+    "password": "123456"
+}
+
+### Register
+POST {{baseUrl}}/auth/register
+Content-Type: multipart/form-data; boundary=MemberRegistrationBoundary
+
+--MemberRegistrationBoundary
+Content-Disposition: form-data; name="name"
+
+Kumar Sonu
+--MemberRegistrationBoundary
+Content-Disposition: form-data; name="email"
+
+kumarsonu676@gmail.com
+--MemberRegistrationBoundary
+Content-Disposition: form-data; name="phoneNumber"
+
+01700000000
+--MemberRegistrationBoundary
+Content-Disposition: form-data; name="state"
+
+Dhaka
+--MemberRegistrationBoundary
+Content-Disposition: form-data; name="location"
+
+Mirpur
+--MemberRegistrationBoundary
+Content-Disposition: form-data; name="idCardType"
+
+National ID
+--MemberRegistrationBoundary
+Content-Disposition: form-data; name="idCardNumber"
+
+1234567890
+--MemberRegistrationBoundary
+Content-Disposition: form-data; name="password"
+
+StrongPass1!
+--MemberRegistrationBoundary
+Content-Disposition: form-data; name="confirmPassword"
+
+StrongPass1!
+--MemberRegistrationBoundary
+Content-Disposition: form-data; name="image"; filename="profile.jpg"
+Content-Type: image/jpeg
+
+< ./files/profile.jpg
+--MemberRegistrationBoundary
+Content-Disposition: form-data; name="idCardFrontImage"; filename="id-front.jpg"
+Content-Type: image/jpeg
+
+< ./files/id-front.jpg
+--MemberRegistrationBoundary
+Content-Disposition: form-data; name="idCardBackImage"; filename="id-back.jpg"
+Content-Type: image/jpeg
+
+< ./files/id-back.jpg
+--MemberRegistrationBoundary--
+
+### Trainer Register
+POST {{baseUrl}}/auth/register/trainer
+Content-Type: multipart/form-data; boundary=TrainerRegistrationBoundary
+
+--TrainerRegistrationBoundary
+Content-Disposition: form-data; name="name"
+
+Rahim Trainer
+--TrainerRegistrationBoundary
+Content-Disposition: form-data; name="email"
+
+rahim.trainer@gmail.com
+--TrainerRegistrationBoundary
+Content-Disposition: form-data; name="phoneNumber"
+
+01711111111
+--TrainerRegistrationBoundary
+Content-Disposition: form-data; name="state"
+
+Dhaka
+--TrainerRegistrationBoundary
+Content-Disposition: form-data; name="location"
+
+Banani
+--TrainerRegistrationBoundary
+Content-Disposition: form-data; name="idCardType"
+
+National ID
+--TrainerRegistrationBoundary
+Content-Disposition: form-data; name="idCardNumber"
+
+TRN123456789
+--TrainerRegistrationBoundary
+Content-Disposition: form-data; name="bio"
+
+Certified fitness coach focused on strength, mobility, and beginner-friendly training.
+--TrainerRegistrationBoundary
+Content-Disposition: form-data; name="classesTaught"
+
+HIIT, Yoga, Strength Training
+--TrainerRegistrationBoundary
+Content-Disposition: form-data; name="instructorExperience"
+
+5 years
+--TrainerRegistrationBoundary
+Content-Disposition: form-data; name="certifications"
+
+NASM CPT, CPR, First Aid
+--TrainerRegistrationBoundary
+Content-Disposition: form-data; name="classDeliveryMode"
+
+BOTH
+--TrainerRegistrationBoundary
+Content-Disposition: form-data; name="password"
+
+StrongPass1!
+--TrainerRegistrationBoundary
+Content-Disposition: form-data; name="confirmPassword"
+
+StrongPass1!
+--TrainerRegistrationBoundary
+Content-Disposition: form-data; name="image"; filename="trainer-profile.jpg"
+Content-Type: image/jpeg
+
+< ./files/trainer-profile.jpg
+--TrainerRegistrationBoundary
+Content-Disposition: form-data; name="idCardFrontImage"; filename="trainer-id-front.jpg"
+Content-Type: image/jpeg
+
+< ./files/trainer-id-front.jpg
+--TrainerRegistrationBoundary
+Content-Disposition: form-data; name="idCardBackImage"; filename="trainer-id-back.jpg"
+Content-Type: image/jpeg
+
+< ./files/trainer-id-back.jpg
+--TrainerRegistrationBoundary--
+
+### Logout
+POST {{baseUrl}}/auth/logout
+Content-Type: application/json
+x-client-id: {{clientId}}
+Authorization: Bearer {{accessToken}}

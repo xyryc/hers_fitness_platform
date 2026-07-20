@@ -1,0 +1,91 @@
+### Member: Available Classes
+GET {{baseUrl}}/member/classes
+Content-Type: application/json
+x-client-id: {{clientId}}
+Authorization: Bearer {{memberAccessToken}}
+
+### Member: Hold Single Session Booking and Get Summary
+POST {{baseUrl}}/member/classes/{{fitnessClassId}}/bookings
+Content-Type: application/json
+x-client-id: {{clientId}}
+Authorization: Bearer {{memberAccessToken}}
+
+{
+  "fullName": "Rahman Hossain",
+  "email": "rahman@example.com",
+  "phoneNumber": "+8801711111111",
+  "location": "Gulshan, Dhaka",
+  "selectedClassType": "IN_PERSON",
+  "comment": "I prefer morning sessions.",
+  "availabilitySlotId": "{{availabilitySlotId}}",
+  "couponCode": "PLACEHOLDER"
+}
+
+### Member: Hold Monthly Session Booking and Get Summary
+POST {{baseUrl}}/member/classes/{{monthlyFitnessClassId}}/bookings
+Content-Type: application/json
+x-client-id: {{clientId}}
+Authorization: Bearer {{memberAccessToken}}
+
+{
+  "fullName": "Rahman Hossain",
+  "email": "rahman@example.com",
+  "phoneNumber": "+8801711111111",
+  "location": "Gulshan, Dhaka",
+  "selectedClassType": "ONLINE",
+  "comment": "Monthly plan selected from trainer calendar.",
+  "availabilitySlotIds": [
+    "{{availabilitySlotId1}}",
+    "{{availabilitySlotId2}}",
+    "{{availabilitySlotId3}}"
+  ],
+  "couponCode": "PLACEHOLDER"
+}
+
+### Member: Create Stripe PaymentIntent for Flutter SDK
+POST {{baseUrl}}/member/booking-payments/{{bookingPaymentId}}/stripe-payment-intent
+Content-Type: application/json
+x-client-id: {{clientId}}
+Authorization: Bearer {{memberAccessToken}}
+
+### Member: Confirm Booking Payment After Stripe Success
+POST {{baseUrl}}/member/booking-payments/{{bookingPaymentId}}/confirm
+Content-Type: application/json
+x-client-id: {{clientId}}
+Authorization: Bearer {{memberAccessToken}}
+
+{
+  "provider": "stripe",
+  "paymentMethod": "card",
+  "providerSessionId": "{{paymentIntentId}}"
+}
+
+### Member: Mark Booking Payment Failed
+POST {{baseUrl}}/member/booking-payments/{{bookingPaymentId}}/fail
+Content-Type: application/json
+x-client-id: {{clientId}}
+Authorization: Bearer {{memberAccessToken}}
+
+{
+  "provider": "stripe",
+  "paymentMethod": "card",
+  "providerSessionId": "{{paymentIntentId}}"
+}
+
+### Member: My Booked Classes
+GET {{baseUrl}}/member/bookings
+Content-Type: application/json
+x-client-id: {{clientId}}
+Authorization: Bearer {{memberAccessToken}}
+
+### Member: Next Booked Class
+GET {{baseUrl}}/member/bookings/next
+Content-Type: application/json
+x-client-id: {{clientId}}
+Authorization: Bearer {{memberAccessToken}}
+
+### Member: Homepage Next Workouts
+GET {{baseUrl}}/member/workouts/next?limit=5
+Content-Type: application/json
+x-client-id: {{clientId}}
+Authorization: Bearer {{memberAccessToken}}

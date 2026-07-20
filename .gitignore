@@ -1,0 +1,67 @@
+# ==========================================
+# Root .gitignore for HerFitness Monorepo
+# ==========================================
+
+# OS/System files
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.temp
+
+# IDEs and Editors
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+*.sublime-workspace
+.history/
+
+# ==========================================
+# Frontend (Flutter App) Ignores
+# ==========================================
+Hers-Fitness-app/build/
+Hers-Fitness-app/.dart_tool/
+Hers-Fitness-app/.flutter-plugins-dependencies
+Hers-Fitness-app/.pub-cache/
+Hers-Fitness-app/.pub/
+Hers-Fitness-app/android/app/debug/
+Hers-Fitness-app/android/app/profile/
+Hers-Fitness-app/android/app/release/
+Hers-Fitness-app/app.*.symbols
+Hers-Fitness-app/app.*.map.json
+Hers-Fitness-app/migrate_working_dir/
+Hers-Fitness-app/dev/
+Hers-Fitness-app/devtools_options.yaml
+
+# ==========================================
+# Backend (NestJS API) Ignores
+# ==========================================
+herFitness-backend/node_modules/
+herFitness-backend/dist/
+herFitness-backend/*.tsbuildinfo
+herFitness-backend/logs/
+herFitness-backend/npm-debug.log*
+herFitness-backend/pnpm-debug.log*
+herFitness-backend/yarn-debug.log*
+herFitness-backend/yarn-error.log*
+herFitness-backend/.nyc_output/
+herFitness-backend/coverage/
+
+# Backend sensitive environment variables and keys
+herFitness-backend/.env
+herFitness-backend/.env.*
+!herFitness-backend/.env.example
+herFitness-backend/*firebase-adminsdk*.json
+
+# Backend Prisma generated client and runtime data
+herFitness-backend/prisma/generated/
+herFitness-backend/public/uploads/
+herFitness-backend/pids/
+herFitness-backend/*.pid
+herFitness-backend/*.seed
+herFitness-backend/*.pid.lock

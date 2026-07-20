@@ -1,0 +1,39 @@
+### Start or Get Conversation
+POST {{baseUrl}}/chat/conversations
+Content-Type: application/json
+x-client-id: {{clientId}}
+Authorization: Bearer {{memberAccessToken}}
+
+{
+  "trainerUserId": "{{trainerUserId}}"
+}
+
+### Send Text Message
+POST {{baseUrl}}/chat/conversations/{{conversationId}}/messages
+Content-Type: application/json
+x-client-id: {{clientId}}
+Authorization: Bearer {{accessToken}}
+
+{
+  "messageType": "TEXT",
+  "text": "Hello, are you available tomorrow?"
+}
+
+### Upload and Send Image Message
+POST {{baseUrl}}/chat/conversations/{{conversationId}}/messages/image
+x-client-id: {{clientId}}
+Authorization: Bearer {{accessToken}}
+Content-Type: multipart/form-data; boundary=ChatImageBoundary
+
+--ChatImageBoundary
+Content-Disposition: form-data; name="image"; filename="chat-image.jpg"
+Content-Type: image/jpeg
+
+< ./files/chat-image.jpg
+--ChatImageBoundary--
+
+### List Messages
+GET {{baseUrl}}/chat/conversations/{{conversationId}}/messages
+Content-Type: application/json
+x-client-id: {{clientId}}
+Authorization: Bearer {{accessToken}}

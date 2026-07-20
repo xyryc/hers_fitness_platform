@@ -1,0 +1,75 @@
+import { AuthProviderEnum } from "src/common/enums/auth-provider.enum";
+import { MemberFitnessAssessmentEntity } from "./member-fitness-assessment.entity";
+import { RoleEntity } from "./role-entity";
+
+export interface UserRecentActivityEntity {
+    type: string;
+    title: string;
+    description: string | null;
+    occurredAt: Date;
+    metadata: Record<string, any>;
+}
+
+export interface UserEntity {
+    id: string;
+    email?: string | null;
+    username?: string | null;
+    password?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    displayName?: string | null;
+    phoneNumber?: string | null;
+    profileImageUrl?: string | null;
+    coverPhotoUrl?: string | null;
+    state?: string | null;
+    location?: string | null;
+    idCardType?: string | null;
+    idCardNumber?: string | null;
+    idCardFrontImageUrl?: string | null;
+    idCardBackImageUrl?: string | null;
+    verificationStatus?: string | null;
+    classesTaught?: string | null;
+    fitnessClasses?: string[];
+    instructorExperience?: string | null;
+    instructorDuration?: string | null;
+    certifications?: string | null;
+    classDeliveryMode?: string | null;
+    sessionFormat?: string | null;
+    baseLocationLat?: number | null;
+    baseLocationLng?: number | null;
+    liveLocationLat?: number | null;
+    liveLocationLng?: number | null;
+    isOnline?: boolean;
+    lastSeen?: Date | null;
+    stripeConnectAccountId?: string | null;
+    stripeConnectOnboardingComplete?: boolean;
+    stripeChargesEnabled?: boolean;
+    stripePayoutsEnabled?: boolean;
+    stripeDetailsSubmitted?: boolean;
+    stripeConnectUpdatedAt?: Date | null;
+    payoutReady?: boolean;
+    currentLat?: number | null;
+    currentLng?: number | null;
+    locationUpdatedAt?: Date | null;
+    hasCompletedMemberFitnessAssessment?: boolean;
+    memberFitnessAssessment?: MemberFitnessAssessmentEntity | null;
+    provider?: AuthProviderEnum;
+    providerId?: string | null;
+    isEmailVerified?: boolean;
+    isPhoneVerified?: boolean;
+    isActive?: boolean;
+    timezone?: string | null;
+    locale?: string | null;
+    metadata?: Record<string, any> | null;
+    bio?: string | null;
+    dob?: Date | null;
+    gender?: string | null;
+    tagline?: string | null;
+    website?: string | null;
+    countryCodeIso3?: string | null;
+    //country?: Partial<CountryDTO> | null;
+    roles?: RoleEntity[] | null;
+    recentActivity?: UserRecentActivityEntity[];
+    createdAt: Date;
+    updatedAt?: Date | null;
+}

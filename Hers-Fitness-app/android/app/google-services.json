@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1065768006335",
+    "project_id": "hers-fitness",
+    "storage_bucket": "hers-fitness.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1065768006335:android:5f4795a0f75b80a16a4c0a",
+        "android_client_info": {
+          "package_name": "com.yourcompany.heba"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfDSmd_Fsll4CopY-qhC7OBaSB6MosMRE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
