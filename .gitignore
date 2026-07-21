@@ -65,3 +65,5 @@ herFitness-backend/pids/
 herFitness-backend/*.pid
 herFitness-backend/*.seed
 herFitness-backend/*.pid.lock
+config.bat
+node_modules

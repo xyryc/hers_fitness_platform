@@ -1,0 +1,257 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #121212;
+  --dashboard-primary: #f7869a;
+  --dashboard-primary-soft: #fdf2f4;
+  --dashboard-border: #e0e0e0;
+  --dashboard-muted: #7a7a7a;
+}
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-work-sans);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-work-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+
+button,
+input {
+  font: inherit;
+}
+
+.logout-3d {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  outline: none;
+  border: 2px solid #b18597;
+  vertical-align: middle;
+  text-decoration: none;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: #382b22;
+  text-transform: uppercase;
+  padding: 0.75rem 1rem;
+  background: #fff0f0;
+  border-radius: 0.75em;
+  transform-style: preserve-3d;
+  transition: transform 150ms cubic-bezier(0, 0, 0.58, 1), background 150ms cubic-bezier(0, 0, 0.58, 1);
+  width: 100%;
+}
+
+.logout-3d::before {
+  position: absolute;
+  content: '';
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #f9c4d2;
+  border-radius: inherit;
+  box-shadow: 0 0 0 2px #b18597, 0 0.5em 0 0 #ffe3e2;
+  transform: translate3d(0, 0.5em, -1em);
+  transition: transform 150ms cubic-bezier(0, 0, 0.58, 1), box-shadow 150ms cubic-bezier(0, 0, 0.58, 1);
+}
+
+.logout-3d:hover {
+  background: #ffe9e9;
+  transform: translate(0, 0.2em);
+}
+
+.logout-3d:hover::before {
+  box-shadow: 0 0 0 2px #b18597, 0 0.3em 0 0 #ffe3e2;
+  transform: translate3d(0, 0.3em, -1em);
+}
+
+.logout-3d:active {
+  background: #ffe9e9;
+  transform: translate(0em, 0.5em);
+}
+
+.logout-3d:active::before {
+  box-shadow: 0 0 0 2px #b18597, 0 0 #ffe3e2;
+  transform: translate3d(0, 0, -1em);
+}
+
+.styled-form {
+  background-color: white;
+  border: 1px solid transparent;
+  border-radius: 25px;
+  transition: 0.4s ease-in-out;
+  box-shadow: rgba(0, 0, 0, 0.4) 1px 2px 2px;
+}
+
+.login-figma-bg {
+  background:
+    linear-gradient(148deg, rgba(255, 255, 255, 0) 0 28%, rgba(255, 255, 255, 0.82) 39%, rgba(255, 255, 255, 0.96) 51%, rgba(255, 255, 255, 0.7) 62%, rgba(255, 255, 255, 0) 75%),
+    radial-gradient(ellipse 106% 78% at 0% 0%, rgba(218, 82, 117, 0.92) 0%, rgba(225, 112, 139, 0.74) 28%, rgba(237, 166, 184, 0.42) 48%, rgba(255, 255, 255, 0) 70%),
+    radial-gradient(ellipse 98% 72% at 100% 100%, rgba(218, 82, 117, 0.95) 0%, rgba(225, 112, 139, 0.76) 31%, rgba(237, 166, 184, 0.42) 50%, rgba(255, 255, 255, 0) 74%),
+    #f8f8f9;
+}
+
+.styled-form:hover {
+  transform: translateX(-0.5em) translateY(-0.5em);
+  border: 1px solid #171717;
+  box-shadow: 10px 10px 0px #666666;
+}
+
+.styled-input-container {
+  border-radius: 5px;
+  border: 1px solid #f5f5f5;
+  background-color: #f5f5f5;
+  transition: 0.4s ease-in-out;
+}
+
+.styled-input-container input {
+  appearance: none;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  color: #121212;
+}
+
+/* .styled-input-container input::selection {
+  background: transparent;
+  color: #121212;
+} */
+
+.styled-input-container input:-webkit-autofill,
+.styled-input-container input:-webkit-autofill:hover,
+.styled-input-container input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #121212;
+  background-color: transparent !important;
+  background-image: none !important;
+  -webkit-background-clip: text;
+  background-clip: text;
+  caret-color: #121212;
+  box-shadow: 0 0 0 1000px transparent inset !important;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+.styled-input-container:hover {
+  box-shadow:
+    6px 6px 0px #969696,
+    -3px -3px 10px #ffffff;
+}
+
+.styled-input-container:focus-within {
+  background: #ffffff;
+  box-shadow: inset 2px 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.styled-input-container:focus-within input:-webkit-autofill,
+.styled-input-container:focus-within input:-webkit-autofill:hover,
+.styled-input-container:focus-within input:-webkit-autofill:focus {
+  box-shadow: 0 0 0 1000px transparent inset !important;
+}
+
+.styled-btn {
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  border: none;
+  color: black;
+  transition: 0.4s ease-in-out;
+  box-shadow: rgba(0, 0, 0, 0.4) 1px 1px 1px;
+}
+
+.styled-btn:hover {
+  box-shadow:
+    6px 6px 0px #969696,
+    -3px -3px 10px #ffffff;
+  transform: translateX(-0.5em) translateY(-0.5em);
+}
+
+.styled-btn:active {
+  transition: 0.2s;
+  transform: translateX(0em) translateY(0em);
+  box-shadow: none;
+}
+
+/* Custom Checkbox Styles */
+.checkbox-styled-wrapper .checkbox-container input {
+  appearance: none;
+  -webkit-appearance: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  z-index: 1;
+}
+
+.checkbox-styled-wrapper .checkbox-container {
+  display: block;
+  position: relative;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+  user-select: none;
+}
+
+.checkbox-styled-wrapper .checkmark {
+  position: relative;
+  top: 0;
+  left: 0;
+  height: 2.3em;
+  width: 2.3em;
+  background-color: #ccc;
+  border-radius: 50%;
+  transition: 0.4s;
+}
+
+.checkbox-styled-wrapper .checkmark:hover {
+  box-shadow:
+    inset 17px 17px 16px #b3b3b3,
+    inset -17px -17px 16px #ffffff;
+}
+
+.checkbox-styled-wrapper .checkbox-container input:checked ~ .checkmark {
+  box-shadow: none;
+  background-color: limegreen;
+  transform: rotateX(360deg);
+}
+
+.checkbox-styled-wrapper .checkbox-container input:checked ~ .checkmark:hover {
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
+}
+
+.checkbox-styled-wrapper .checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.checkbox-styled-wrapper .checkbox-container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.checkbox-styled-wrapper .checkbox-container .checkmark:after {
+  left: 0.96em;
+  top: 0.7em;
+  width: 0.25em;
+  height: 0.5em;
+  border: solid white;
+  border-width: 0 0.15em 0.15em 0;
+  box-shadow: 0.1em 0.1em 0em 0 rgba(0, 0, 0, 0.3);
+  transform: rotate(45deg);
+}
